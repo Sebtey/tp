@@ -6,7 +6,8 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.exceptions.IllegalTaskIndexException;
 import seedu.address.model.Model;
-import seedu.address.model.tag.Assignee;
+import seedu.address.model.tag.Member;
+import seedu.address.model.tag.Member;
 import seedu.address.model.task.Description;
 import seedu.address.model.task.Status;
 import seedu.address.model.task.Task;
@@ -31,7 +32,7 @@ public class AssignCommand extends Command{
     public static final String MESSAGE_EDIT_TASK_SUCCESS = "Edited Task: %1$s";
 
     private final Index index;
-    private final Assignee[] assignees; //TODO change implementation to a new form
+    private final Member[] assignees; //TODO change implementation to a new form
 
 //    private final EditCommand.EditTaskDescriptor editTaskDescriptor;
 
@@ -46,7 +47,7 @@ public class AssignCommand extends Command{
         //duplicates will be handled by the Task
 
         this.index = index;
-        this.assignees = Arrays.stream(assignees).map(name -> new Assignee(name)).toArray(Assignee[]::new);
+        this.assignees = Arrays.stream(assignees).map(name -> new Member(name)).toArray(Member[]::new);
 //        this.editTaskDescriptor = new EditCommand.EditTaskDescriptor(editTaskDescriptor);
     }
 
@@ -73,7 +74,7 @@ public class AssignCommand extends Command{
      * Creates and returns a {@code Task} with the details of {@code taskToEdit}
      * edited with {@code editTaskDescriptor}.
      */
-    private static Task createAssignedTask(Task taskToAssign, Assignee[] assignees) {
+    private static Task createAssignedTask(Task taskToAssign, Member[] assignees) {
         assert taskToAssign != null;
 
 //        Description updatedName = editTaskDescriptor.getDescription().orElse(taskToEdit.getDescription());

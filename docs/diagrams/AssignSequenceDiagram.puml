@@ -14,10 +14,10 @@ box Model MODEL_COLOR_T1
 participant ":Model" as Model MODEL_COLOR
 end box
 
-[-> LogicManager : execute("assign 1 a/John")
+[-> LogicManager : execute("assign 1 m/John")
 activate LogicManager
 
-LogicManager -> TaskWiseParser : parseCommand("assign 1 a/John")
+LogicManager -> TaskWiseParser : parseCommand("assign 1 m/John")
 activate TaskWiseParser
 
 create AssignCommandParser

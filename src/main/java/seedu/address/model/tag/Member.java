@@ -7,19 +7,19 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  * Represents an assignee in the list of tasks in taskWise.
  * Guarantees: immutable;
  */
-public class Assignee {
+public class Member {
  //TODO create test files
 
-    public final String assigneeName;
+    public final String memberName;
 
     /**
      * Constructs a {@code Assignee}.
      *
-     * @param assigneeName A valid tag name.
+     * @param memberName A valid tag name.
      */
-    public Assignee(String assigneeName) {
-        requireNonNull(assigneeName);
-        this.assigneeName = assigneeName;
+    public Member(String memberName) {
+        requireNonNull(memberName);
+        this.memberName = memberName;
     }
 
 //    /**
@@ -36,24 +36,24 @@ public class Assignee {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof Assignee)) {
+        if (!(other instanceof Member)) {
             return false;
         }
 
-        Assignee otherTag = (Assignee) other;
-        return assigneeName.equals(otherTag.assigneeName);
+        Member otherTag = (Member) other;
+        return memberName.equals(otherTag.memberName);
     }
 
     @Override
     public int hashCode() {
-        return assigneeName.hashCode();
+        return memberName.hashCode();
     }
 
     /**
      * Format state as text for viewing.
      */
     public String toString() {
-        return '[' + assigneeName + ']';
+        return '[' + memberName + ']';
     }
 
 }
