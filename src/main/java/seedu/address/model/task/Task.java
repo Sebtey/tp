@@ -16,8 +16,6 @@ import seedu.address.model.tag.Tag;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Task {
-    //TODO add assignees
-
     // Identity fields
     private final Description description;
     private final Set<Tag> tags = new HashSet<>();

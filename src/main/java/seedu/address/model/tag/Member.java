@@ -10,6 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Member {
  //TODO create test files
 
+    public static final String MESSAGE_CONSTRAINTS = "Member names should not be empty";
+
     public final String memberName;
 
     /**
@@ -22,12 +24,13 @@ public class Member {
         this.memberName = memberName;
     }
 
-//    /**
-//     * Returns true if a given string is a valid tag name.
-//     */
-//    public static boolean isValidTagName(String test) {
-//        return test.matches(VALIDATION_REGEX);
-//    }
+    /**
+     * Returns true if a given string is a valid name.
+     * Name is valid if it is not empty.
+     */
+    public static boolean isValidName(String test) {
+        return !(test.trim().isEmpty());
+    }
 
     @Override
     public boolean equals(Object other) {

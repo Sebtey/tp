@@ -55,10 +55,24 @@ public class ParserUtil {
         return new Description(trimmedDescription);
     }
 
+    /**
+     * Parses a {@code String memberName} into a {@code Member}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws IllegalArgumentException if the given {@code memberName} is invalid.
+     */
     public static Member parseMember(String memberName) throws IllegalArgumentException {
+        if (Member.isValidName(memberName)) {
+            throw new IllegalArgumentException(
+                    Member.MESSAGE_CONSTRAINTS
+            );
+        }
         return new Member(memberName);
     }
 
+    /**
+     * Parses {@code List<String> memberNames} into a {@code Set<Member>}.
+     */
     public static Set<Member> parseMembers(List<String> memberNames) throws IllegalArgumentException {
         requireNonNull(memberNames);
 
