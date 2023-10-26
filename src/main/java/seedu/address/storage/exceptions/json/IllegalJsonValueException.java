@@ -1,9 +1,11 @@
 package seedu.address.storage.exceptions.json;
 
+import seedu.address.storage.exceptions.StorageException;
+
 /**
  * Signals that some given data does not fulfill some constraints.
  */
-public class IllegalJsonValueException extends Exception {
+public class IllegalJsonValueException extends StorageException {
     /**
      * @param message should contain relevant information on the failed constraint(s)
      */

@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+
+:System: as System
+:Project Manager: as User
+
+rectangle TaskWise {
+    usecase "Add a task" as UC01
+    usecase "Delete a task" as UC02
+    usecase "View all tasks" as UC03
+    usecase "Marks a task as done" as UC04
+    usecase "Unmarks a task that was marked as done" as UC05
+    usecase "Warn on invalid command" as UC06
+    usecase "Warn on illegal command" as UC07
+    usecase "Add a deadline to an existing task" as UC08
+    usecase "Assign members to an existing task" as UC09
+    usecase "Update priority of an existing task" as UC10
+    usecase "Add note to a task" as UC11
+    usecase "Sort tasks in task list" as UC12
+}
+
+User ---> UC01
+User ---> UC02
+User ---> UC03
+User ---> UC04
+User ---> UC05
+User ---> UC06
+User ---> UC07
+User ---> UC08
+User ---> UC09
+User ---> UC10
+User ---> UC11
+User ---> UC12
+
+System ---> UC06
+System ---> UC07
+@enduml

@@ -5,17 +5,17 @@ skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
 TaskWise *-right-> "1" UniqueTaskList
-TaskWise *-right-> "1" UniqueTagList
-UniqueTagList -[hidden]down- UniqueTaskList
-UniqueTagList -[hidden]down- UniqueTaskList
+TaskWise *-right-> "1" UniqueMemberList
+UniqueMemberList -[hidden]down- UniqueTaskList
+UniqueMemberList -[hidden]down- UniqueTaskList
 
-UniqueTagList -right-> "*" Tag
-UniqueTaskList -right-> Task
+UniqueMemberList -right-> "*" Member
+UniqueTaskList -right-> "~* all" Task
 
-Task -up-> "*" Tag
+Task *-up-> "*" Member
 
-Task *--> Name
-Task *--> Phone
-Task *--> Email
-Task *--> Address
+Task *--> "1" Description
+Task *--> "0..1" Deadline
+Task *--> "0..1"Priority
+Task *--> "0..1" Note
 @enduml

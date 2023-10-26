@@ -9,6 +9,8 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.IllegalArgumentException;
+import seedu.address.logic.sort.enums.SortOrderEnum;
+import seedu.address.logic.sort.enums.SortTypeEnum;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.task.Description;
 
@@ -76,5 +78,31 @@ public class ParserUtil {
         }
 
         return tagSet;
+    }
+
+    /**
+     * Parses {@code String} into a {@code SortOrderEnum}
+     * @param enumValue String enum value to parse
+     * @return Parsed {@code SortOrderEnum} value
+     */
+    public static SortOrderEnum parseSortOrder(String enumValue) throws IllegalArgumentException {
+        try {
+            return SortOrderEnum.of(enumValue);
+        } catch (java.lang.IllegalArgumentException exception) {
+            throw new IllegalArgumentException(SortOrderEnum.MESSAGE_CONSTRAINTS + enumValue + "!");
+        }
+    }
+
+    /**
+     * Parses {@code String} into a {@code SortTypeEnum}
+     * @param enumValue String enum value to parse
+     * @return Parsed {@code SortTypeEnum} value
+     */
+    public static SortTypeEnum parseSortType(String enumValue) throws IllegalArgumentException {
+        try {
+            return SortTypeEnum.of(enumValue);
+        } catch (java.lang.IllegalArgumentException exception) {
+            throw new IllegalArgumentException(SortTypeEnum.MESSAGE_CONSTRAINTS + enumValue + "!");
+        }
     }
 }

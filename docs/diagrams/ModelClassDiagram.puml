@@ -14,11 +14,11 @@ Class UserPrefs
 
 Class UniqueTaskList
 Class Task
-Class Address
-Class Email
-Class Name
-Class Phone
-Class Tag
+Class Note
+Class Priority
+Class Description
+Class Deadline
+Class Member
 
 Class I #FFFFFF
 }
@@ -36,19 +36,19 @@ ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
 TaskWise *--> "1" UniqueTaskList
-UniqueTaskList --> "~* all" Task
-Task *--> Name
-Task *--> Phone
-Task *--> Email
-Task *--> Address
-Task *--> "*" Tag
+UniqueTaskList ----> "~* all" Task
+Task *--> "1" Description
+Task *--> "0..1" Deadline
+Task *--> "0..1" Priority
+Task *--> "0..1" Note
+Task *--> "*" Member
 
 Task -[hidden]up--> I
 UniqueTaskList -[hidden]right-> I
 
-Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
+Description -[hidden]right-> Deadline
+Deadline -[hidden]right-> Note
+Note -[hidden]right-> Priority
 
 ModelManager --> "~* filtered" Task
 @enduml

@@ -1,0 +1,61 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":TaskWiseParser" as TaskWiseParser LOGIC_COLOR
+participant ":NoteCommandParser" as NoteCommandParser LOGIC_COLOR
+participant "u:NoteCommand" as NoteCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant ":TaskWise" as TaskWise MODEL_COLOR
+end box
+[-> LogicManager : execute()
+activate LogicManager
+
+LogicManager -> TaskWiseParser : parseCommand()
+activate TaskWiseParser
+
+create NoteCommandParser
+TaskWiseParser -> NoteCommandParser : parse()
+activate NoteCommandParser
+
+create NoteCommand
+NoteCommandParser -> NoteCommand : NoteCommand()
+activate NoteCommand
+
+NoteCommand -> NoteCommandParser : NoteCommand
+deactivate NoteCommand
+
+NoteCommandParser --> TaskWiseParser : NoteCommand
+deactivate NoteCommandParser
+
+TaskWiseParser --> LogicManager : u
+deactivate TaskWiseParser
+
+LogicManager -> NoteCommand : execute()
+activate NoteCommand
+
+NoteCommand -> Model : setTask()
+activate Model
+
+Model -> TaskWise : setTask()
+activate TaskWise
+
+TaskWise --> Model :
+deactivate TaskWise
+
+Model --> NoteCommand
+deactivate Model
+
+NoteCommand --> LogicManager : result
+deactivate NoteCommand
+NoteCommand -[hidden]-> LogicManager : result
+destroy NoteCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalTasks.ALICE;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -145,6 +146,11 @@ public class AddCommandTest {
 
         @Override
         public void setTask(Task target, Task editedTask) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setAllTasks(List<Task> tasks) {
             throw new AssertionError("This method should not be called.");
         }
 

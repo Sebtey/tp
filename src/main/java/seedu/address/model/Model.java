@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -79,6 +80,12 @@ public interface Model {
      * The task identity of {@code editedTask} must not be the same as another existing task in the address book.
      */
     void setTask(Task target, Task editedTask);
+
+    /**
+     * Replaces all tasks in the list with {@code Tasks} in task list
+     * @param tasks {@code Task} to replace all tasks with
+     */
+    void setAllTasks(List<Task> tasks);
 
     /**
      * Returns an unmodifiable view of the filtered task list

@@ -1,0 +1,107 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":TaskWiseParser" as TaskWiseParser LOGIC_COLOR
+participant ":SortCommandParser" as SortCommandParser LOGIC_COLOR
+participant ":SortCommand" as SortCommand LOGIC_COLOR
+participant ":CommandResult" as CommandResult LOGIC_COLOR
+participant ":ObservableList<Task>" as ObservableList LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+end box
+
+box UniqueTaskList #30aa00
+participant ":UniqueTaskList" as UniqueTaskList #30aa00
+end box
+
+[-> LogicManager : execute("sort o/a ty/dl")
+activate LogicManager
+
+LogicManager -> TaskWiseParser : parseCommand("sort o/a ty/dl")
+activate TaskWiseParser
+
+create SortCommandParser
+TaskWiseParser -> SortCommandParser
+activate SortCommandParser
+
+SortCommandParser --> TaskWiseParser
+deactivate SortCommandParser
+
+TaskWiseParser -> SortCommandParser : parse("o/a ty/dl")
+activate SortCommandParser
+
+create SortCommand
+SortCommandParser -> SortCommand
+activate SortCommand
+
+SortCommand --> SortCommandParser
+deactivate SortCommand
+
+SortCommandParser --> TaskWiseParser
+deactivate SortCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+SortCommandParser -[hidden]-> TaskWiseParser
+destroy SortCommandParser
+
+TaskWiseParser --> LogicManager
+deactivate TaskWiseParser
+
+LogicManager -> SortCommand : execute()
+activate SortCommand
+
+SortCommand -> Model : getTaskWise()
+activate Model
+
+Model -> Model : getTaskList()
+activate Model
+
+Model -> UniqueTaskList : asUnmodifiableObservableList()
+activate UniqueTaskList
+
+UniqueTaskList --> Model
+deactivate UniqueTaskList
+
+Model --> Model
+deactivate Model
+
+Model --> SortCommand
+
+deactivate Model
+
+create ObservableList
+SortCommand -[hidden]> ObservableList
+
+SortCommand -> ObservableList : sorted()
+activate ObservableList
+
+ObservableList --> SortCommand
+deactivate ObservableList
+
+SortCommand -> Model : setAllTasks()
+activate Model
+
+Model --> SortCommand
+deactivate Model
+
+create CommandResult
+SortCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> SortCommand
+deactivate CommandResult
+
+SortCommand --> LogicManager : result
+deactivate SortCommand
+
+SortCommand -[hidden]-> ObservableList
+destroy ObservableList
+
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
