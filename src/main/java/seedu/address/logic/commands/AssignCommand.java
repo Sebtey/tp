@@ -7,16 +7,19 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.exceptions.IllegalTaskIndexException;
 import seedu.address.model.Model;
 import seedu.address.model.tag.Member;
-import seedu.address.model.tag.Member;
 import seedu.address.model.task.Description;
 import seedu.address.model.task.Status;
 import seedu.address.model.task.Task;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ASSIGNEES;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBERS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_TASKS;
 
 public class AssignCommand extends Command{
@@ -24,31 +27,26 @@ public class AssignCommand extends Command{
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns mentioned individuals to task identified"
             + "by the index number used in the displayed task list. "
-            + "Task's assignees will add in the mentioned individuals.\n"
+            + "Task's members will add in the mentioned individuals.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + PREFIX_ASSIGNEES + "[assignee name]\n"
+            + PREFIX_MEMBERS + "[member name]\n"
             + "Example: " + COMMAND_WORD + " 1 a/John";
 
-    public static final String MESSAGE_EDIT_TASK_SUCCESS = "Edited Task: %1$s";
+    public static final String MESSAGE_ASSIGN_TASK_SUCCESS = "Assigned Task: %1$s";
 
     private final Index index;
-    private final Member[] assignees; //TODO change implementation to a new form
-
-//    private final EditCommand.EditTaskDescriptor editTaskDescriptor;
+    private final MemberList members;
 
     /**
      * @param index of the task in the filtered task list.
-     * @param assignees to be assigned to the task.
+     * @param members to be assigned to the task.
      */
-    public AssignCommand(Index index, String[] assignees) {
+    public AssignCommand(Index index, Set<Member> members) {
         requireNonNull(index);
 
-        //todo check that assignees contain at least one String
-        //duplicates will be handled by the Task
-
         this.index = index;
-        this.assignees = Arrays.stream(assignees).map(name -> new Member(name)).toArray(Member[]::new);
-//        this.editTaskDescriptor = new EditCommand.EditTaskDescriptor(editTaskDescriptor);
+        this.members = new MemberList();
+        this.members.setMembers(members);
     }
 
     @Override
@@ -61,27 +59,28 @@ public class AssignCommand extends Command{
         }
 
         Task taskToAssign = lastShownList.get(index.getZeroBased());
-        Task assignedTask = createAssignedTask(taskToAssign, assignees);
+        Task assignedTask = createAssignedTask(taskToAssign, members);
 
         model.setTask(taskToAssign, assignedTask);
         model.updateFilteredTaskList(PREDICATE_SHOW_ALL_TASKS);
 
         //TODO update Message.format to show assignees too
-        return new CommandResult(String.format(MESSAGE_EDIT_TASK_SUCCESS, Messages.format(assignedTask)));
+        return new CommandResult("Assign");
+//        return new CommandResult(String.format(MESSAGE_ASSIGN_TASK_SUCCESS, Messages.format(assignedTask)));
     }
 
     /**
      * Creates and returns a {@code Task} with the details of {@code taskToEdit}
      * edited with {@code editTaskDescriptor}.
      */
-    private static Task createAssignedTask(Task taskToAssign, Member[] assignees) {
+    private static Task createAssignedTask(Task taskToAssign, MemberList members) {
         assert taskToAssign != null;
 
-//        Description updatedName = editTaskDescriptor.getDescription().orElse(taskToEdit.getDescription());
+        //TODO integrate with other features - deadline, priority
         Description description = taskToAssign.getDescription();
         Status status = taskToAssign.getStatus(); //Not edited using editCommand
 
-        //TODO assign assignees before returning
+        //TODO assign members before returning
         return new Task(description, status);
     }
 
@@ -98,91 +97,72 @@ public class AssignCommand extends Command{
 
         AssignCommand otherAssignCommand = (AssignCommand) other;
         return index.equals(otherAssignCommand.index)
-                && assignees.equals(otherAssignCommand.assignees);
-        //todo come up with new encapsulation for the assignees, mainly for the equals method
+                && members.equals(otherAssignCommand.members);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("index", index)
-                .add("assignees", assignees.toString())
+                .add("members", members.toString())
                 .toString();
     }
 
+    /**
+     * Stores the members to assign to the task.
+     */
+    public static class MemberList {
+        public static final String MESSAGE_CONSTRAINT =
+                "Member list should has at least 1 member name";
+        private Set<Member> members;
 
-    //TODO edit to store the assignees
-//    /**
-//     * Stores the assignees to assign to the task.
-//     */
-//    public static class AssigneeList {
-//        private Set<Assignee> assignees;
-//
-//        public AssigneeList() {}
-//
-//        /**
-//         * Copy constructor.
-//         * A defensive copy of {@code tags} is used internally.
-//         */
-//        public EditTaskDescriptor(EditCommand.EditTaskDescriptor toCopy) {
-//            setDescription(toCopy.description);
-//            setTags(toCopy.tags);
-//        }
-//
-//        /**
-//         * Returns true if at least one field is edited.
-//         */
-//        public boolean isAnyFieldEdited() {
-//            return CollectionUtil.isAnyNonNull(description, tags);
-//        }
-//
-//        public void setDescription(Description description) {
-//            this.description = description;
-//        }
-//
-//        public Optional<Description> getDescription() {
-//            return Optional.ofNullable(description);
-//        }
-//
-//        /**
-//         * Sets {@code tags} to this object's {@code tags}.
-//         * A defensive copy of {@code tags} is used internally.
-//         */
-//        public void setTags(Set<Tag> tags) {
-//            this.tags = (tags != null) ? new HashSet<>(tags) : null;
-//        }
-//
-//        /**
-//         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
-//         * if modification is attempted.
-//         * Returns {@code Optional#empty()} if {@code tags} is null.
-//         */
-//        public Optional<Set<Tag>> getTags() {
-//            return Optional.ofNullable(tags).map(x -> Collections.unmodifiableSet(tags));
-//        }
-//
-//        @Override
-//        public boolean equals(Object other) {
-//            if (other == this) {
-//                return true;
-//            }
-//
-//            // instanceof handles nulls
-//            if (!(other instanceof EditCommand.EditTaskDescriptor)) {
-//                return false;
-//            }
-//
-//            EditCommand.EditTaskDescriptor otherEditTaskDescriptor = (EditCommand.EditTaskDescriptor) other;
-//            return Objects.equals(description, otherEditTaskDescriptor.description)
-//                    && Objects.equals(tags, otherEditTaskDescriptor.tags);
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return new ToStringBuilder(this)
-//                    .add("description", description)
-//                    .add("tags", tags)
-//                    .toString();
-//        }
-//    }
+        public MemberList() {}
+
+        /**
+         * Copy constructor.
+         * A defensive copy of {@code members} is used internally.
+         */
+        public MemberList(MemberList toCopy) {
+            setMembers(toCopy.members);
+        }
+
+        /**
+         * Sets {@code members} to this object's {@code members}.
+         * A defensive copy of {@code members} is used internally.
+         */
+        public void setMembers(Set<Member> members) {
+            this.members = (members != null) ? new HashSet<>(members) : null;
+        }
+
+        /**
+         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * Returns {@code Optional#empty()} if {@code members} is null.
+         */
+        public Optional<Set<Member>> getTags() {
+            return Optional.ofNullable(members).map(x -> Collections.unmodifiableSet(members));
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other == this) {
+                return true;
+            }
+
+            // instanceof handles nulls
+            if (!(other instanceof EditCommand.EditTaskDescriptor)) {
+                return false;
+            }
+
+            MemberList otherMemberList = (MemberList) other;
+            return Objects.equals(members, otherMemberList.members);
+        }
+
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .add("members", members)
+                    .toString();
+        }
+    }
 }

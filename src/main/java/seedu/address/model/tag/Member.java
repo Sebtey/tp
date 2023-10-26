@@ -13,7 +13,7 @@ public class Member {
     public final String memberName;
 
     /**
-     * Constructs a {@code Assignee}.
+     * Constructs a {@code Member}.
      *
      * @param memberName A valid tag name.
      */

@@ -2,15 +2,19 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
+import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.parser.exceptions.IllegalArgumentException;
 import seedu.address.logic.sort.enums.SortOrderEnum;
 import seedu.address.logic.sort.enums.SortTypeEnum;
+import seedu.address.model.tag.Member;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.task.Description;
 
@@ -37,10 +41,10 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String name} into a {@code Name}.
+     * Parses a {@code String description} into a {@code Description}.
      * Leading and trailing whitespaces will be trimmed.
      *
-     * @throws IllegalArgumentException if the given {@code name} is invalid.
+     * @throws IllegalArgumentException if the given {@code description} is invalid.
      */
     public static Description parseDescription(String description) throws IllegalArgumentException {
         requireNonNull(description);
@@ -49,6 +53,27 @@ public class ParserUtil {
             throw new IllegalArgumentException(Description.MESSAGE_CONSTRAINTS);
         }
         return new Description(trimmedDescription);
+    }
+
+    public static Member parseMember(String memberName) throws IllegalArgumentException {
+        return new Member(memberName);
+    }
+
+    public static Set<Member> parseMembers(List<String> memberNames) throws IllegalArgumentException {
+        requireNonNull(memberNames);
+
+        if (memberNames.size() < 1) {
+            throw new IllegalArgumentException(
+                    AssignCommand.MemberList.MESSAGE_CONSTRAINT
+            );
+        }
+
+        final Set<Member> memberSet = new HashSet<>();
+        for (String memberName : memberNames) {
+            memberSet.add(parseMember(memberName));
+        }
+
+        return memberSet;
     }
 
     /**

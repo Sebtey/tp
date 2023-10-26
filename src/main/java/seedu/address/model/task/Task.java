@@ -21,6 +21,8 @@ public class Task {
     // Identity fields
     private final Description description;
     private final Set<Tag> tags = new HashSet<>();
+
+    private final Set<Member> members = new HashSet<>();
     private final Status status;
 
     /**
@@ -33,6 +35,7 @@ public class Task {
         this.description = description;
         this.status = new Status();
         this.tags.addAll(Collections.emptySet());
+        this.members.addAll(Collections.emptySet());
     }
 
     /**
@@ -46,6 +49,7 @@ public class Task {
         this.description = description;
         this.status = status;
         this.tags.addAll(Collections.emptySet());
+        this.members.addAll(Collections.emptySet());
     }
 
     public Description getDescription() {
@@ -58,6 +62,14 @@ public class Task {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable member set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Member> getMembers() {
+        return Collections.unmodifiableSet(members);
     }
 
     public Status getStatus() {
@@ -95,6 +107,7 @@ public class Task {
         Task otherTask = (Task) other;
         return description.equals(otherTask.description)
                 && tags.equals(otherTask.tags)
+                && members.equals(otherTask.members)
                 && status.equals(otherTask.status);
     }
 
@@ -109,6 +122,7 @@ public class Task {
         return new ToStringBuilder(this)
                 .add("name", description)
                 .add("tags", tags)
+                .add("members", members)
                 .add("status", status)
                 .toString();
     }
