@@ -1,15 +1,12 @@
 package seedu.address.model.tag;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
  * Represents an assignee in the list of tasks in taskWise.
  * Guarantees: immutable;
  */
 public class Member {
- //TODO create test files
-
     public static final String MESSAGE_CONSTRAINTS = "Member names should not be empty";
 
     public final String memberName;
