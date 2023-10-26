@@ -62,7 +62,7 @@ public class ParserUtil {
      * @throws IllegalArgumentException if the given {@code memberName} is invalid.
      */
     public static Member parseMember(String memberName) throws IllegalArgumentException {
-        if (Member.isValidName(memberName)) {
+        if (!Member.isValidName(memberName)) {
             throw new IllegalArgumentException(
                     Member.MESSAGE_CONSTRAINTS
             );

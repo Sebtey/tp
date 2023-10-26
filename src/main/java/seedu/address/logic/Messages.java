@@ -43,6 +43,7 @@ public class Messages {
         final StringBuilder builder = new StringBuilder();
         builder.append(task.getDescription());
         task.getTags().forEach(builder::append);
+        task.getMembers().forEach(builder::append);
         return builder.toString();
     }
 

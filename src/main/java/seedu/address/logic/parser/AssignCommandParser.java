@@ -19,9 +19,11 @@ public class AssignCommandParser implements Parser<AssignCommand> {
     public AssignCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_MEMBERS);
 
-        if (!isPrefixPresent(argMultimap, PREFIX_MEMBERS) || !argMultimap.getPreamble().isEmpty()) {
+        if (!isPrefixPresent(argMultimap, PREFIX_MEMBERS) || argMultimap.getPreamble().isEmpty()) {
             throw new InvalidFormatException(
-                    MESSAGE_INVALID_COMMAND_FORMAT
+                    MESSAGE_INVALID_COMMAND_FORMAT,
+                    AssignCommand.COMMAND_WORD,
+                    AssignCommand.MESSAGE_USAGE
             );
         }
 

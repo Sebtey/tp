@@ -56,7 +56,7 @@ public class Member {
      * Format state as text for viewing.
      */
     public String toString() {
-        return '[' + memberName + ']';
+        return memberName;
     }
 
 }

@@ -26,13 +26,13 @@ public class AssignCommand extends Command{
     public static final String COMMAND_WORD = "assign";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns mentioned individuals to task identified"
-            + "by the index number used in the displayed task list. "
+            + " by the index number used in the displayed task list. "
             + "Task's members will add in the mentioned individuals.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + PREFIX_MEMBERS + "[member name]\n"
             + "Example: " + COMMAND_WORD + " 1 a/John";
 
-    public static final String MESSAGE_ASSIGN_TASK_SUCCESS = "Assigned Task: %1$s";
+    public static final String MESSAGE_ASSIGN_TASK_SUCCESS = "Assigned Task: %1$s with members ";
 
     private final Index index;
     private final MemberList members;
@@ -64,9 +64,8 @@ public class AssignCommand extends Command{
         model.setTask(taskToAssign, assignedTask);
         model.updateFilteredTaskList(PREDICATE_SHOW_ALL_TASKS);
 
-        //TODO update Message.format to show assignees too
-        return new CommandResult("Assign");
-//        return new CommandResult(String.format(MESSAGE_ASSIGN_TASK_SUCCESS, Messages.format(assignedTask)));
+        return new CommandResult(String.format(MESSAGE_ASSIGN_TASK_SUCCESS, Messages.format(assignedTask))
+         + members);
     }
 
     /**
@@ -160,9 +159,7 @@ public class AssignCommand extends Command{
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .add("members", members)
-                    .toString();
+            return members.toString();
         }
     }
 }
