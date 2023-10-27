@@ -74,7 +74,7 @@ public class TaskTest {
     public void toStringMethod() {
         String expected = Task.class.getCanonicalName()
                 + "{name=" + ALICE.getDescription() + ", tags=" + ALICE.getTags()
-                + ", status=" + ALICE.getStatus() + "}";
+                + ", members=" + ALICE.getMembers() + ", status=" + ALICE.getStatus() + "}";
         assertEquals(expected, ALICE.toString());
     }
 }

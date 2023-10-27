@@ -83,7 +83,9 @@ public class AssignCommand extends Command {
         Status status = taskToAssign.getStatus(); //Not edited using editCommand
 
         //TODO assign members before returning
-        return new Task(description, status);
+        Task updatedTask = new Task(description, status);
+
+        return updatedTask;
     }
 
     @Override
@@ -152,7 +154,7 @@ public class AssignCommand extends Command {
             }
 
             // instanceof handles nulls
-            if (!(other instanceof EditCommand.EditTaskDescriptor)) {
+            if (!(other instanceof MemberList)) {
                 return false;
             }
 
