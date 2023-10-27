@@ -14,7 +14,7 @@ public class Member {
     /**
      * Constructs a {@code Member}.
      *
-     * @param memberName A valid tag name.
+     * @param memberName A valid Member name.
      */
     public Member(String memberName) {
         requireNonNull(memberName);

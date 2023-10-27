@@ -1,8 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEADLINE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PRIORITY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_TASKS;
 
 import java.util.Collections;
@@ -20,8 +21,12 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.exceptions.DuplicatedTaskException;
 import seedu.address.logic.commands.exceptions.IllegalTaskIndexException;
 import seedu.address.model.Model;
+import seedu.address.model.tag.Member;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.task.Deadline;
 import seedu.address.model.task.Description;
+import seedu.address.model.task.Note;
+import seedu.address.model.task.Priority;
 import seedu.address.model.task.Status;
 import seedu.address.model.task.Task;
 
@@ -37,8 +42,11 @@ public class EditCommand extends Command {
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_DESCRIPTION + "DESCRIPTION] "
-            + "[" + PREFIX_TAG + "TAG]...\n"
-            + "Example: " + COMMAND_WORD + " 1 ";
+            + "[" + PREFIX_DEADLINE + "DEADLINE]"
+            + "[" + PREFIX_PRIORITY + "PRIORITY]..."
+            + "Example: " + COMMAND_WORD + " 1 "
+            + PREFIX_DESCRIPTION + "Finalise features "
+            + PREFIX_PRIORITY + "high";
 
     public static final String MESSAGE_EDIT_TASK_SUCCESS = "Edited Task: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -87,10 +95,14 @@ public class EditCommand extends Command {
     private static Task createEditedTask(Task taskToEdit, EditTaskDescriptor editTaskDescriptor) {
         assert taskToEdit != null;
 
-        Description updatedName = editTaskDescriptor.getDescription().orElse(taskToEdit.getDescription());
+        Description updatedDescription = editTaskDescriptor.getDescription().orElse(taskToEdit.getDescription());
+        Deadline updatedDeadline = editTaskDescriptor.getDeadline().orElse(taskToEdit.getDeadline());
+        Priority updatedPriority = editTaskDescriptor.getPriority().orElse(taskToEdit.getPriority());
         Status status = taskToEdit.getStatus(); //Not edited using editCommand
+        Note note = taskToEdit.getNote(); //Not edited using editCommand
+        Set<Member> members = taskToEdit.getMembers();
 
-        return new Task(updatedName, status);
+        return new Task(updatedDescription, status, note, updatedDeadline, updatedPriority, members);
     }
 
     @Override
@@ -123,9 +135,12 @@ public class EditCommand extends Command {
      */
     public static class EditTaskDescriptor {
         private Description description;
+        private Deadline deadline;
+        private Priority priority;
         private Set<Tag> tags;
 
-        public EditTaskDescriptor() {}
+        public EditTaskDescriptor() {
+        }
 
         /**
          * Copy constructor.
@@ -134,13 +149,23 @@ public class EditCommand extends Command {
         public EditTaskDescriptor(EditTaskDescriptor toCopy) {
             setDescription(toCopy.description);
             setTags(toCopy.tags);
+            setDeadline(toCopy.deadline);
+            setPriority(toCopy.priority);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(description, tags);
+            return CollectionUtil.isAnyNonNull(description, tags, deadline, priority);
+        }
+
+        public void setDeadline(Deadline deadline) {
+            this.deadline = deadline;
+        }
+
+        public Optional<Deadline> getDeadline() {
+            return Optional.ofNullable(deadline);
         }
 
         public void setDescription(Description description) {
@@ -149,6 +174,12 @@ public class EditCommand extends Command {
 
         public Optional<Description> getDescription() {
             return Optional.ofNullable(description);
+        }
+        public void setPriority(Priority priority) {
+            this.priority = priority;
+        }
+        public Optional<Priority> getPriority() {
+            return Optional.ofNullable(priority);
         }
 
         /**
@@ -181,7 +212,9 @@ public class EditCommand extends Command {
 
             EditTaskDescriptor otherEditTaskDescriptor = (EditTaskDescriptor) other;
             return Objects.equals(description, otherEditTaskDescriptor.description)
-                    && Objects.equals(tags, otherEditTaskDescriptor.tags);
+                    && Objects.equals(tags, otherEditTaskDescriptor.tags)
+                    && Objects.equals(deadline, otherEditTaskDescriptor.deadline)
+                    && Objects.equals(priority, otherEditTaskDescriptor.priority);
         }
 
         @Override
@@ -189,6 +222,8 @@ public class EditCommand extends Command {
             return new ToStringBuilder(this)
                     .add("description", description)
                     .add("tags", tags)
+                    .add("deadline", deadline)
+                    .add("priority", priority)
                     .toString();
         }
     }

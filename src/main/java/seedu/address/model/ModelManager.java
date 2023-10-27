@@ -4,8 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -21,21 +19,21 @@ import seedu.address.model.task.Task;
 public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
-    private final TaskWise addressBook;
+    private final TaskWise taskWise;
     private final UserPrefs userPrefs;
     private final FilteredList<Task> filteredTasks;
 
     /**
-     * Initializes a ModelManager with the given addressBook and userPrefs.
+     * Initializes a ModelManager with the given taskWise and userPrefs.
      */
-    public ModelManager(ReadOnlyTaskWise addressBook, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(addressBook, userPrefs);
+    public ModelManager(ReadOnlyTaskWise taskWise, ReadOnlyUserPrefs userPrefs) {
+        requireAllNonNull(taskWise, userPrefs);
 
-        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
+        logger.fine("Initializing with task wise: " + taskWise + " and user prefs " + userPrefs);
 
-        this.addressBook = new TaskWise(addressBook);
+        this.taskWise = new TaskWise(taskWise);
         this.userPrefs = new UserPrefs(userPrefs);
-        filteredTasks = new FilteredList<>(this.addressBook.getTaskList());
+        filteredTasks = new FilteredList<>(this.taskWise.getTaskList());
     }
 
     public ModelManager() {
@@ -80,29 +78,29 @@ public class ModelManager implements Model {
     //=========== TaskWise ================================================================================
 
     @Override
-    public void setTaskWise(ReadOnlyTaskWise addressBook) {
-        this.addressBook.resetData(addressBook);
+    public void setTaskWise(ReadOnlyTaskWise taskWise) {
+        this.taskWise.resetData(taskWise);
     }
 
     @Override
     public ReadOnlyTaskWise getTaskWise() {
-        return addressBook;
+        return taskWise;
     }
 
     @Override
     public boolean hasTask(Task task) {
         requireNonNull(task);
-        return addressBook.hasTask(task);
+        return taskWise.hasTask(task);
     }
 
     @Override
     public void deleteTask(Task target) {
-        addressBook.removeTask(target);
+        taskWise.removeTask(target);
     }
 
     @Override
     public void addTask(Task task) {
-        addressBook.addTask(task);
+        taskWise.addTask(task);
         updateFilteredTaskList(PREDICATE_SHOW_ALL_TASKS);
     }
 
@@ -110,16 +108,16 @@ public class ModelManager implements Model {
     public void setTask(Task target, Task editedTask) {
         requireAllNonNull(target, editedTask);
 
-        addressBook.setTask(target, editedTask);
+        taskWise.setTask(target, editedTask);
     }
 
     @Override
-    public void setAllTasks(List<Task> tasks) {
-        if (!tasks.stream().allMatch(Objects::nonNull)) {
+    public void setAllTasks(java.util.List<seedu.address.model.task.Task> tasks) {
+        if (!tasks.stream().allMatch(java.util.Objects::nonNull)) {
             throw new AssertionError("Task List cannot contain null");
         }
 
-        addressBook.setTasks(tasks);
+        taskWise.setTasks(tasks);
     }
 
     //=========== Filtered Task List Accessors =============================================================
@@ -151,7 +149,7 @@ public class ModelManager implements Model {
         }
 
         ModelManager otherModelManager = (ModelManager) other;
-        return addressBook.equals(otherModelManager.addressBook)
+        return taskWise.equals(otherModelManager.taskWise)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredTasks.equals(otherModelManager.filteredTasks);
     }

@@ -19,37 +19,50 @@ public class Task {
     // Identity fields
     private final Description description;
     private final Set<Tag> tags = new HashSet<>();
-
     private final Set<Member> members = new HashSet<>();
     private final Status status;
+    private final Note note;
+    private final Deadline deadline;
+    private final Priority priority;
 
     /**
      * Only description is required.
+     *
      * @param description
      */
-    // TODO: Fix/Remove the default fields that are unnecessary
     public Task(Description description) {
         requireAllNonNull(description);
         this.description = description;
         this.status = new Status();
+        this.note = new Note("");
+        this.deadline = Deadline.ofNull();
+        this.priority = Priority.NONE;
         this.tags.addAll(Collections.emptySet());
         this.members.addAll(Collections.emptySet());
     }
 
     /**
-     * Constructor for task, to be used in retrieval from storage.
+     * Constructor for a task with a description, status, note, deadline and priority.
      *
      * @param description
      * @param status
+     * @param note
+     * @param deadline
+     * @param priority
+     * @param members
      */
-    public Task(Description description, Status status) {
+    public Task(Description description, Status status,
+                Note note, Deadline deadline,
+                Priority priority, Set<Member> members) {
         requireAllNonNull(description);
         this.description = description;
         this.status = status;
+        this.note = note;
+        this.deadline = deadline;
+        this.priority = priority;
         this.tags.addAll(Collections.emptySet());
-        this.members.addAll(Collections.emptySet());
+        this.members.addAll(members);
     }
-
     public Description getDescription() {
         return description;
     }
@@ -72,6 +85,21 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public Note getNote() {
+        return note;
+    }
+    public Deadline getDeadline() {
+        return deadline;
+    }
+
+    /**
+     * Returns the priority level of the task.
+     * @return priority
+     */
+    public Priority getPriority() {
+        return priority;
     }
 
     /**
@@ -106,13 +134,14 @@ public class Task {
         return description.equals(otherTask.description)
                 && tags.equals(otherTask.tags)
                 && members.equals(otherTask.members)
-                && status.equals(otherTask.status);
+                && status.equals(otherTask.status)
+                && priority.equals(otherTask.priority);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(description, tags, status);
+        return Objects.hash(description, tags, status, note, deadline, priority, members);
     }
 
     @Override
@@ -122,7 +151,9 @@ public class Task {
                 .add("tags", tags)
                 .add("members", members)
                 .add("status", status)
+                .add("note", note)
+                .add("deadline", deadline)
+                .add("priority", priority)
                 .toString();
     }
-
 }

@@ -1,8 +1,9 @@
 package seedu.address.model.tag;
 
-import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 class MemberTest {
     @Test
@@ -11,9 +12,17 @@ class MemberTest {
     }
 
     @Test
-    public void constructor_invalidTagName_throwsIllegalArgumentException() {
+    public void constructor_invalidMemberName_throwsIllegalArgumentException() {
         String invalidMemberName = "";
         assertThrows(IllegalArgumentException.class, () -> new Tag(invalidMemberName));
+    }
+
+    @Test
+    public void equals_sameName() {
+        Member member = new Member("John");
+        Member John = new Member("John");
+
+        assertTrue(member.equals(John));
     }
 
     @Test

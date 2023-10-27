@@ -1,5 +1,6 @@
 package seedu.address.model;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,12 +11,16 @@ import static seedu.address.testutil.TypicalTasks.BENSON;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.task.Description;
 import seedu.address.model.task.NameContainsKeywordsPredicate;
+import seedu.address.model.task.Task;
 import seedu.address.testutil.TaskWiseBuilder;
 
 public class ModelManagerTest {
@@ -94,14 +99,32 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void setAllTask_changeList_doesNotThrow() {
+        Task task = new Task(new Description("this should work"));
+        assertDoesNotThrow(() -> modelManager.setAllTasks(List.of(task)));
+        assertTrue(modelManager.hasTask(task));
+        assertEquals(1, modelManager.getFilteredTaskList().size());
+    }
+
+    @Test
+    public void setAllTask_changeListContainsNull_throwsAssertionError() {
+        Task task = new Task(new Description("this should work"));
+        List<Task> newList = new ArrayList<>();
+        newList.add(null);
+        newList.add(task);
+
+        assertThrows(AssertionError.class, () -> modelManager.setAllTasks(newList));
+    }
+
+    @Test
     public void equals() {
-        TaskWise addressBook = new TaskWiseBuilder().withTask(ALICE).withTask(BENSON).build();
+        TaskWise taskWise = new TaskWiseBuilder().withTask(ALICE).withTask(BENSON).build();
         TaskWise differentTaskWise = new TaskWise();
         UserPrefs userPrefs = new UserPrefs();
 
         // same values -> returns true
-        modelManager = new ModelManager(addressBook, userPrefs);
-        ModelManager modelManagerCopy = new ModelManager(addressBook, userPrefs);
+        modelManager = new ModelManager(taskWise, userPrefs);
+        ModelManager modelManagerCopy = new ModelManager(taskWise, userPrefs);
         assertTrue(modelManager.equals(modelManagerCopy));
 
         // same object -> returns true
@@ -113,13 +136,13 @@ public class ModelManagerTest {
         // different types -> returns false
         assertFalse(modelManager.equals(5));
 
-        // different addressBook -> returns false
+        // different taskWise -> returns false
         assertFalse(modelManager.equals(new ModelManager(differentTaskWise, userPrefs)));
 
         // different filteredList -> returns false
         String[] keywords = ALICE.getDescription().fullDescription.split("\\s+");
         modelManager.updateFilteredTaskList(new NameContainsKeywordsPredicate(Arrays.asList(keywords)));
-        assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
+        assertFalse(modelManager.equals(new ModelManager(taskWise, userPrefs)));
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredTaskList(PREDICATE_SHOW_ALL_TASKS);
@@ -127,6 +150,6 @@ public class ModelManagerTest {
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setTaskWiseFilePath(Paths.get("differentFilePath"));
-        assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+        assertFalse(modelManager.equals(new ModelManager(taskWise, differentUserPrefs)));
     }
 }

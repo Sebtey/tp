@@ -47,7 +47,9 @@ public class EditTaskDescriptorTest {
         EditTaskDescriptor editTaskDescriptor = new EditTaskDescriptor();
         String expected = EditTaskDescriptor.class.getCanonicalName() + "{description="
                 + editTaskDescriptor.getDescription().orElse(null) + ", tags="
-                + editTaskDescriptor.getTags().orElse(null) + "}";
+                + editTaskDescriptor.getTags().orElse(null) + ", deadline="
+                + editTaskDescriptor.getDeadline().orElse(null) + ", priority="
+                + editTaskDescriptor.getPriority().orElse(null) + "}";
         assertEquals(expected, editTaskDescriptor.toString());
     }
 }

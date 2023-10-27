@@ -18,7 +18,10 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.commands.exceptions.IllegalTaskIndexException;
 import seedu.address.model.Model;
 import seedu.address.model.tag.Member;
+import seedu.address.model.task.Deadline;
 import seedu.address.model.task.Description;
+import seedu.address.model.task.Note;
+import seedu.address.model.task.Priority;
 import seedu.address.model.task.Status;
 import seedu.address.model.task.Task;
 
@@ -78,12 +81,18 @@ public class AssignCommand extends Command {
     private static Task createAssignedTask(Task taskToAssign, MemberList members) {
         assert taskToAssign != null;
 
-        //TODO integrate with other features - deadline, priority
         Description description = taskToAssign.getDescription();
-        Status status = taskToAssign.getStatus(); //Not edited using editCommand
 
-        //TODO assign members before returning
-        return new Task(description, status);
+        //Following are not to be edited using assignCommand
+        Note note = taskToAssign.getNote();
+        Deadline deadline = taskToAssign.getDeadline();
+        Priority priority = taskToAssign.getPriority();
+        Status status = taskToAssign.getStatus();
+        Set<Member> newMembers = members.getMembers().get();
+
+        Task updatedTask = new Task(description, status, note, deadline, priority, newMembers);
+
+        return updatedTask;
     }
 
     @Override
@@ -141,7 +150,7 @@ public class AssignCommand extends Command {
          * if modification is attempted.
          * Returns {@code Optional#empty()} if {@code members} is null.
          */
-        public Optional<Set<Member>> getTags() {
+        public Optional<Set<Member>> getMembers() {
             return Optional.ofNullable(members).map(x -> Collections.unmodifiableSet(members));
         }
 
@@ -152,7 +161,7 @@ public class AssignCommand extends Command {
             }
 
             // instanceof handles nulls
-            if (!(other instanceof EditCommand.EditTaskDescriptor)) {
+            if (!(other instanceof MemberList)) {
                 return false;
             }
 

@@ -162,7 +162,7 @@ Included inside the Task model are the following attributes:
     * Encapsulates a LocalDateTime object as an attribute, indicating a certain deadline for the task the Deadline object is associated with.
 * `Note`
     * Encapsulates a string attribute indicating the additional information of the task containing the task.
-* `Member`
+* `Members`
     * A set of member instances, each encapsulating the name of the respective members assigned to the task.
 * `Priority`
     * Encapsulates levels of priority as enumerations, highlighting the importance or urgency of the task it is associated with.
@@ -346,14 +346,14 @@ The following sequence diagram shows how the add operation works for `add t/Comp
 ![AddSequenceDiagram](images/AddSequenceDiagram.png)
 
 ### Proposed Enhancements
-The Add feature could allow for other *optional* attributes in the Task Model such as `deadline`, `priority`, `asignee` and `notes` to be added together with the task `description`.
+The Add feature could allow for other *optional* attributes in the Task Model such as `deadline`, `priority`, `member` and `notes` to be added together with the task `description`.
 
 An example of the enhanced `add` feature is: `add t/Complete DG d/26/10/2023 p/high` which adds the task with `description` Complete DG, `deadline` 26/10/2023 and `priority` high.
 
 ### Alternatives Considered:
-We considered allowing the add feature to add `Notes`, `Assignee`, `Deadline`, and `Priority` at one go. However, we also needed to consider ease of use by user when entering all these attributes at one go using the `add` command. Therefore, we concluded that these 4 attributes should be optional to be entered all at once using `add`.
+We considered allowing the add feature to add `Notes`, `Member`, `Deadline`, and `Priority` at one go. However, we also needed to consider ease of use by user when entering all these attributes at one go using the `add` command. Therefore, we concluded that these 4 attributes should be optional to be entered all at once using `add`.
 
-Only the `Description` has been made compulsory. The `Edit` feature will allow for users to add and update `Deadline`, `Priority`. The `Note` and `Assignee` features will allow for `assignee` and `note` to be added respectively.
+Only the `Description` has been made compulsory. The `Edit` feature will allow for users to add and update `Deadline`, `Priority`. The `Note` and `Assign` features will allow for `note` and `member` to be added respectively.
 
 ## Mark Feature
 
@@ -502,25 +502,34 @@ The process is given as such:
 4. The created `AssignCommandParser` then parses the parameters of the command via the `parse()` method.
 5. If the parse is successful, a new instance of `AssignCommand` with the relevant parsed parameters is created and returned to the caller.
 6. The `AssignCommand` object is then returned back to `LogicManager`, which invokes the `execute()` method of the `AssignCommand` object.
-    1. `AssignCommand` will then call the `assignTask()` method on `Model`, which will in turn call the `Task()` method on `TaskWise`, replacing the old `Task` with a new instance of the `Task` with an updated task list with the task having an updated set of assignees.
+    1. `AssignCommand` will then call the `assignTask()` method on `Model`, which will in turn call the `Task()` method on `TaskWise`
+   , replacing the old `Task` with a new instance of the `Task` having an updated set of members.
     2. If the assignment to the `Task` is successful, a new `CommandResult` object is then created and returned to the caller of the `AssignCommand::execute()` method.
 7. `LogicManager` receives the `CommandResult` object returned from the execution of the `AssignCommand` and parses it
 8. The execution of `AssignCommand` terminates.
 
 ![assign sequence diagram](/images/AssignSequenceDiagram.png)
 
-To remove the assigned members to a task, the project manager can use the edit command `edit 1 a/` whereby it will remove all assignees to the task at index 1.
+To remove the assigned members to a task, the project manager can use the edit command `edit 1 a/` whereby it will remove all assigned members of the task at index 1.
 
-The implementation of the attribute assignees to task is done using the Set data structure as it will help us handle the scenario where the project manager accidentally assign the same member to the task again. The group members' name will be encapsulated under the Member class as the sole attribute to ensure consistency with the other attributes.
+The implementation of the attribute `members` to task is done using the Set data structure as it handles the scenario where the project manager accidentally assign the same member to the task again. The group members' name will be encapsulated under the Member class as the sole attribute to ensure consistency with the other attributes.
 
 
 ### Alternatives considered
-An alternative that was thought of for the Member class was to have an enum class containing the name of the different members. However, implementing this idea would make it difficult for us to handle the case where there are at least 2 group members of the exact same name, which would be deemed as duplicates in the enum class. Therefore, as an enhancement to this feature, we plan to store the group members in a json file, updating the json file when members are added into the group or left the group, retrieving the data the moment the application starts up.
+An alternative that was thought of for the Member class was to have an enum class containing the name of the different members.
+However, implementing this idea would make it difficult for us to handle the case where there are at least 2 group members of the exact same name, 
+which would be deemed as duplicates in the enum class. 
+
+Therefore, as an enhancement to this feature, we plan to store the group members in a json file, 
+updating the json file when members are added into the group or left the group, 
+retrieving the data the moment the application starts up.
 
 ### Proposed enhancement
 1) Stores group member in a json file.
+
 2) Assigning member based on index in json file.
-3) Assignee class to also track the task that the member is assigned to.
+
+3) Member class to also track the task that the member is assigned to.
 
 
 # Documentation, Logging, Testing, Configuration and DevOps
