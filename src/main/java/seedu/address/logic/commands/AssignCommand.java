@@ -83,6 +83,7 @@ public class AssignCommand extends Command {
 
         Description description = taskToAssign.getDescription();
 
+
         //Following are not to be edited using assignCommand
         Note note = taskToAssign.getNote();
         Deadline deadline = taskToAssign.getDeadline();
